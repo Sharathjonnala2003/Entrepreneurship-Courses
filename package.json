@@ -1,0 +1,33 @@
+{
+  "name": "entrepreneur-hub",
+  "version": "1.0.0",
+  "description": "Learning platform for entrepreneurship",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server/server.js",
+    "server": "nodemon server/server.js",
+    "client": "cd client && npm run dev",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "install-all": "npm install && cd client && npm install && cd ../server && npm install",
+    "build": "cd client && npm run build",
+    "setup-db": "node server/setup-db.js",
+    "create-admin": "node server/scripts/create-admin.js",
+    "diagnostic": "node server/diagnostic.js",
+    "fix-calendar-table": "node server/recreate-calendar-table.js",
+    "fix-calendar": "node fix-calendar.js"
+  },
+  "keywords": [
+    "entrepreneurship",
+    "courses",
+    "education"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
