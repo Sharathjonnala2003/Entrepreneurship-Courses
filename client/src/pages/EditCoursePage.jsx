@@ -133,10 +133,17 @@ const EditCoursePage = () => {
   useEffect(() => {
     const fetchCourse = async () => {
       try {
-        const response = await axios.get(`/api/courses/${id}`);
+        console.log('Fetching course with ID:', id);
+        const response = await axios.get(`/courses/${id}`);
+        console.log('Course data received:', response.data);
         setFormData(response.data);
       } catch (error) {
         console.error('Error fetching course:', error);
+        // Log detailed error information
+        if (error.response) {
+          console.error('Error status:', error.response.status);
+          console.error('Error data:', error.response.data);
+        }
         setMessage({
           type: 'error',
           text: 'Failed to fetch course details. Please try again.'
@@ -162,10 +169,27 @@ const EditCoursePage = () => {
     setLoading(true);
     setMessage({ type: '', text: '' });
 
-    console.log('Updating course with data:', formData);
+    console.log('Submitting form data:', formData);
+
+    // Improved validation that properly handles price=0
+    if (
+      !formData.title?.trim() ||
+      !formData.description?.trim() ||
+      !formData.category?.trim() ||
+      !formData.duration?.trim() ||
+      formData.price === '' ||
+      !formData.instructor?.trim()
+    ) {
+      console.log('Validation failed - missing fields');
+      setMessage({ type: 'error', text: 'All fields are required' });
+      setLoading(false);
+      return;
+    }
 
     try {
-      await axios.put(`/api/courses/${id}`, {
+      console.log(`Updating course ${id} with data:`, formData);
+
+      const response = await axios.put(`/courses/${id}`, {
         title: formData.title,
         description: formData.description,
         category: formData.category,
@@ -177,23 +201,23 @@ const EditCoursePage = () => {
         studentsEnrolled: Number(formData.studentsEnrolled) || 0
       });
 
+      console.log('Update response:', response.data);
+
       setMessage({
         type: 'success',
         text: 'Course updated successfully!'
       });
 
-      // Redirect to courses page after 2 seconds
+      // Redirect after success
       setTimeout(() => {
         navigate('/courses');
       }, 2000);
-
     } catch (error) {
       console.error('Error updating course:', error);
       let errorMessage = 'Failed to update course. Please try again.';
 
-      if (error.response) {
-        console.error('Error response data:', error.response.data);
-        errorMessage = error.response.data.error || errorMessage;
+      if (error.response?.data?.error) {
+        errorMessage = error.response.data.error;
       }
 
       setMessage({

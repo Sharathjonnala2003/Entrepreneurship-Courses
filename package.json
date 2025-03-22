@@ -1,4 +1,5 @@
 {
+  "$schema": "https://json.schemastore.org/package",
   "name": "entrepreneur-hub",
   "version": "1.0.0",
   "description": "Learning platform for entrepreneurship",
